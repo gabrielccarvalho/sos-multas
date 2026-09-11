@@ -19,10 +19,12 @@ Everything runs from the repo root through Turborepo. pnpm 10 (`packageManager` 
 | `pnpm typecheck` | `tsc --noEmit` in every package. This is the real gate. |
 | `pnpm lint` | ESLint 9 flat config. `eslint-plugin-only-warn` downgrades every rule to a warning, so lint never fails. Read the output anyway. |
 | `pnpm format` | `prettier --write` inside each package |
+| `pnpm test` | Vitest in every package that defines a `test` script (today only `web`, files `lib/**/*.test.ts`) |
+| `pnpm db:up` / `pnpm db:down` | Start or stop the local Postgres 17 container from `docker-compose.yml`. Connection string in `apps/web/.env.example`; copy it to `apps/web/.env.local` |
 
 Scope to one workspace with `pnpm --filter web <script>` or `pnpm --filter @workspace/ui <script>`.
 
-There is no test runner yet.
+Run one test file with `pnpm --filter web exec vitest run lib/domain/deadlines.test.ts`.
 
 ### Adding shadcn components
 
