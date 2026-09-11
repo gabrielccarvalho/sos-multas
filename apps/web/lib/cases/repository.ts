@@ -56,6 +56,21 @@ export type CaseDataUpdate = Partial<
     | "deadlineDefense"
     | "deadlineDriverIndication"
     | "deadlineAppeal"
+    | "ownerName"
+    | "ownerCpf"
+    | "ownerEmail"
+    | "ownerPhone"
+    | "ownerAddress"
+    | "ownerAddressNumber"
+    | "ownerAddressComplement"
+    | "ownerDistrict"
+    | "ownerCity"
+    | "ownerState"
+    | "ownerCep"
+    | "ownerIdDocument"
+    | "ownerCnhNumber"
+    | "placaUf"
+    | "narrative"
   >
 >
 

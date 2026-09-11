@@ -5,7 +5,12 @@
     "DATABASE_URL",
     "ANTHROPIC_API_KEY",
     "EXTRACTION_MODEL",
-    "STORAGE_DIR"
+    "STORAGE_DIR",
+    "PROCURADOR_NAME",
+    "PROCURADOR_CNPJ",
+    "PROCURADOR_ADDRESS",
+    "PROCURADOR_EMAIL",
+    "PROCURADOR_PHONE"
   ],
   "tasks": {
     "build": {
