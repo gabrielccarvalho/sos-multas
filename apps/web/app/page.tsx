@@ -1,6 +1,4 @@
-import Link from "next/link"
-
-import { Button } from "@workspace/ui/components/button"
+import { ButtonLink } from "@/components/button-link"
 
 export default function Page() {
   return (
@@ -13,9 +11,9 @@ export default function Page() {
         DETRAN-RN, com você acompanhando cada passo.
       </p>
       <div>
-        <Button size="lg" nativeButton={false} render={<Link href="/nova" />}>
+        <ButtonLink href="/nova" size="lg">
           Enviar minha multa
-        </Button>
+        </ButtonLink>
       </div>
     </main>
   )

@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import {
@@ -7,7 +6,6 @@ import {
   AlertTitle,
 } from "@workspace/ui/components/alert"
 import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
 import {
   Card,
   CardContent,
@@ -17,6 +15,7 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card"
 
+import { ButtonLink } from "@/components/button-link"
 import { caseProgress } from "@/lib/cases/progress"
 import { getCaseDetails, type CaseDetails } from "@/lib/cases/repository"
 import { formatIsoDate, localIsoDate } from "@/lib/documents/format"
@@ -64,14 +63,9 @@ function Step({
         {title}
         {done ? <Badge variant="secondary">Feito</Badge> : null}
       </div>
-      <Button
-        size="sm"
-        variant={done ? "outline" : "default"}
-        nativeButton={false}
-        render={<Link href={href} />}
-      >
+      <ButtonLink href={href} size="sm" variant={done ? "outline" : "default"}>
         {done ? "Editar" : action}
-      </Button>
+      </ButtonLink>
     </div>
   )
 }
@@ -90,12 +84,7 @@ function NextStep({ details, token }: { details: CaseDetails; token: string }) {
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <Button
-              nativeButton={false}
-              render={<Link href={`${base}/conferir`} />}
-            >
-              Conferir dados
-            </Button>
+            <ButtonLink href={`${base}/conferir`}>Conferir dados</ButtonLink>
           </CardFooter>
         </Card>
       )
@@ -135,12 +124,7 @@ function NextStep({ details, token }: { details: CaseDetails; token: string }) {
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <Button
-              nativeButton={false}
-              render={<Link href={`${base}/assinar`} />}
-            >
-              Ver documentos
-            </Button>
+            <ButtonLink href={`${base}/assinar`}>Ver documentos</ButtonLink>
           </CardFooter>
         </Card>
       )

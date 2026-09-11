@@ -5,7 +5,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@workspace/ui/components/alert"
-import { Button } from "@workspace/ui/components/button"
+import { buttonVariants } from "@workspace/ui/components/button"
 
 import { caseProgress } from "@/lib/cases/progress"
 import { getCaseDetails } from "@/lib/cases/repository"
@@ -68,19 +68,14 @@ export default async function Page({
         <li>Fotografe ou escaneie cada página assinada e envie abaixo.</li>
       </ol>
       {packet ? (
-        <Button
-          variant="outline"
-          nativeButton={false}
-          render={
-            <a
-              href={`/caso/${token}/arquivo/${packet.id}`}
-              target="_blank"
-              rel="noreferrer"
-            />
-          }
+        <a
+          href={`/caso/${token}/arquivo/${packet.id}`}
+          target="_blank"
+          rel="noreferrer"
+          className={buttonVariants({ variant: "outline" })}
         >
           Baixar o pacote (PDF)
-        </Button>
+        </a>
       ) : null}
       <SignedForm token={token} />
     </main>
