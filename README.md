@@ -1,16 +1,16 @@
-# shadcn/ui monorepo template
+# SOS Multas
 
-This is a Next.js monorepo template with shadcn/ui.
+Micro-SaaS for contesting traffic tickets issued in Natal, RN. Next.js monorepo with shadcn/ui. See `CLAUDE.md` for the architecture and `docs/PROJECT.md` for the product.
 
 ## Adding components
 
-To add components to your app, run the following command at the root of your `web` app:
+Run the shadcn CLI against the `ui` package:
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+pnpm dlx shadcn@4.21.0 add button -c packages/ui
 ```
 
-This will place the ui components in the `packages/ui/src/components` directory.
+This places components in `packages/ui/src/components` and their hooks in `packages/ui/src/hooks`.
 
 ## Using components
 

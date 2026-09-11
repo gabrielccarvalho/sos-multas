@@ -1,3 +1,7 @@
+# Agent instructions
+
+Read `CLAUDE.md` (architecture, commands, conventions) and `docs/PROJECT.md` (product, domain, roadmap) before doing anything in this repository. They apply to every agent and every session.
+
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 
