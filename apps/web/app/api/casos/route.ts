@@ -6,54 +6,28 @@ import {
   saveExtraction,
   transitionCase,
 } from "@/lib/cases/repository"
+import { UPLOAD_EXTENSIONS, checkUpload } from "@/lib/cases/uploads"
 import {
   ExtractionFailedError,
   extractNotification,
-  type NotificationMime,
 } from "@/lib/extraction/extract-notification"
 import { getStorage } from "@/lib/storage"
 
-const ACCEPTED: Record<string, NotificationMime> = {
-  "image/jpeg": "image/jpeg",
-  "image/png": "image/png",
-  "application/pdf": "application/pdf",
-}
-
-const EXTENSIONS: Record<NotificationMime, string> = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "application/pdf": "pdf",
-}
-
-const MAX_BYTES = 10 * 1024 * 1024
-
 export async function POST(request: Request) {
   const formData = await request.formData()
-  const file = formData.get("notification")
-  if (!(file instanceof File)) {
-    return NextResponse.json(
-      { error: "Envie a foto ou o PDF da notificação." },
-      { status: 400 }
-    )
+  const check = checkUpload(
+    formData.get("notification"),
+    "Envie a foto ou o PDF da notificação."
+  )
+  if (!check.ok) {
+    return NextResponse.json({ error: check.error }, { status: check.status })
   }
-  const mime = ACCEPTED[file.type]
-  if (!mime) {
-    return NextResponse.json(
-      { error: "Formato não aceito. Envie JPG, PNG ou PDF." },
-      { status: 415 }
-    )
-  }
-  if (file.size > MAX_BYTES) {
-    return NextResponse.json(
-      { error: "O arquivo tem mais de 10 MB." },
-      { status: 413 }
-    )
-  }
+  const { file, mime } = check
 
   const bytes = Buffer.from(await file.arrayBuffer())
   const created = await createCase()
   const storageKey = await getStorage().put(
-    `cases/${created.id}/notification.${EXTENSIONS[mime]}`,
+    `cases/${created.id}/notification.${UPLOAD_EXTENSIONS[mime]}`,
     bytes
   )
   await addFile(created.id, {
