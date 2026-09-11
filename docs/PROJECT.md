@@ -109,6 +109,8 @@ Recommendation: A first, B as an upsell, and use both to gather what C needs.
 - 2026-09-11. Proposed POC design in `docs/specs/2026-09-11-poc-assisted-filing.md` (assisted filing, operator submits, Neon + Drizzle, Vercel Blob, Claude vision, react-pdf, Vitest, token links instead of accounts). Approved 2026-09-11 with Postgres in Docker locally.
 - 2026-09-11. Phase 1 built: pure domain module with tests, Vitest, Docker Postgres.
 - 2026-09-11. Phase 2 built: Drizzle on Postgres, storage interface with local disk, extraction with Claude structured outputs (`claude-opus-5`, override with `EXTRACTION_MODEL`), upload route and review screen. Vercel Blob adapter deferred to deployment. The live extraction has not run yet because no Anthropic key was available in this environment; add `ANTHROPIC_API_KEY` to `apps/web/.env.local` and run the extraction test.
+- 2026-09-11. Phase 3 built: story and requerente form with consent, CNH and CRLV upload, packet PDF (requerimento mirroring STTU's form, defesa, procuração, indicação when the owner was not driving), signed-page upload. The owner signs everything and the company files under a procuração limited to the process. Company identity comes from `PROCURADOR_*` env vars, still unset. A headless-browser rehearsal found and fixed two bugs the tests could not see: a crashing review action and buttons announced to screen readers as buttons instead of links.
+- Open: get DETRAN-RN's current requerimento form (the published PDF link now returns the portal shell) before the first DETRAN-RN filing.
 
 ## Open questions
 

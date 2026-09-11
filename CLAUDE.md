@@ -28,6 +28,8 @@ Run one test file with `pnpm --filter web exec vitest run lib/domain/deadlines.t
 
 Integration tests (repository, confirmation, live extraction) read `apps/web/.env.local`; without `DATABASE_URL` or `ANTHROPIC_API_KEY` they are skipped, not failed. Run `pnpm db:up && pnpm db:migrate` once before them. Every env var the app reads must be listed in `globalEnv` in `turbo.json`, or lint flags it.
 
+Vitest sets its own JSX runtime (`oxc.jsx.runtime: "automatic"` in `apps/web/vitest.config.ts`) because Vite 8 would otherwise honour the Next.js `jsx: "preserve"` setting and fail on `.tsx`.
+
 ### Adding shadcn components
 
 ```bash
@@ -48,6 +50,10 @@ pnpm workspace (`apps/*`, `packages/*`) orchestrated by Turborepo. Internal pack
 - `apps/web/lib/cases` owns case data: `repository.ts` is the only place that reads or writes cases, files, events and extractions, and status changes go through `transitionCase`, which enforces the status machine and writes the event in the same transaction. `confirm-case-data.ts` holds the review-step logic so the server action in `app/caso/[token]/conferir/actions.ts` stays a thin wrapper that only redirects.
 - `apps/web/lib/storage` hides where files live (`Storage` interface). Local disk under `STORAGE_DIR` for now; a Vercel Blob adapter comes with deployment. Files are only served through `/caso/[token]/arquivo/[fileId]`.
 - `apps/web/lib/extraction` is the Claude call. The prompt is versioned (`PROMPT_VERSION`), the model's output is validated with the loose `modelOutputSchema`, normalised, then re-validated with the strict domain schema. Inject `ExtractionDeps` in tests; the live test runs only with `ANTHROPIC_API_KEY`. Synthetic letters live in `__fixtures__` (HTML source plus a PNG rendered with `pnpm dlx playwright screenshot`).
+- `apps/web/lib/documents` builds the packet. `packet-content.ts` is a pure function from case data to every word printed (defesa, procuração, requerimento, indicação); legal wording changes go there, with a test. `pdf/packet-document.tsx` only lays that content out with `@react-pdf/renderer` (built-in Helvetica covers Portuguese; bold is `fontWeight: "bold"`; hyphenation is switched off). The procuração names the company from the `PROCURADOR_*` env vars and prints bracketed placeholders until they are set.
+- The case flow after confirmation lives in `lib/cases`: `submit-story.ts`, `attach-documents.ts`, `attach-signed-pages.ts`, and `generate-packet.ts`, which renders and stores the packet as soon as the story, the CNH and the CRLV are all in, whichever comes last. Routes and server actions in `app/` only call these.
+- A `"use server"` file must export async functions only. A type re-export such as `export type { X }` becomes a runtime reference under Turbopack and crashes the page when the action runs; import types from `lib/` instead.
+- Links styled as buttons use `ButtonLink` (`components/button-link.tsx`) or `buttonVariants` on a plain `<a>`. Base UI's `Button` with `render={<Link />}` keeps `role="button"`, which is wrong for navigation.
 - `packages/ui` (`@workspace/ui`) is the design system: shadcn components, `cn`, shared hooks and the single Tailwind stylesheet. There is no build step. `package.json` `exports` maps `./components/*`, `./hooks/*`, `./lib/*`, `./globals.css` and `./postcss.config` straight to files under `src/`, and `apps/web/next.config.ts` lists it in `transpilePackages`. Import as `@workspace/ui/components/button`.
 - `packages/eslint-config` and `packages/typescript-config` hold the shared configs. Each workspace's `eslint.config.js` and `tsconfig.json` extend them; the root `.eslintrc.js` only carries ignore patterns.
 

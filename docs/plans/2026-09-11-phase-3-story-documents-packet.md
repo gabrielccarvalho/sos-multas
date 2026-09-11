@@ -4183,7 +4183,7 @@ Vitest sets its own JSX runtime (`oxc.jsx.runtime: "automatic"` in `apps/web/vit
 In the "shadcn specifics" section, add:
 
 ```
-- A `Button` that renders a link needs `nativeButton={false}` alongside `render={<Link … />}`; Base UI otherwise treats it as a native button.
+- Links styled as buttons use `ButtonLink` (`apps/web/components/button-link.tsx`, `buttonVariants` on Next's `Link`) or `buttonVariants` on a plain `<a>`. Base UI's `Button` with `render={<Link />}` keeps `role="button"` even with `nativeButton={false}`, which is wrong for navigation. (This replaces the `nativeButton={false}` approach in Task 9, found broken during the Task 10 rehearsal.)
 ```
 
 - [ ] **Step 3: Record the decisions in the spec and the project log**
