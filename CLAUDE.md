@@ -41,6 +41,7 @@ All 61 registry components for this style are already installed. Registry code s
 pnpm workspace (`apps/*`, `packages/*`) orchestrated by Turborepo. Internal packages use the `@workspace/*` scope and `workspace:*` versions.
 
 - `apps/web` is the Next.js 16 app (App Router, React 19, React Server Components). It owns routes, `app/layout.tsx`, fonts, the theme provider and anything app-specific under `components/`, `hooks/`, `lib/`. The `@/` alias maps to the app root.
+- `apps/web/lib/domain` is pure domain logic (órgão routing, stage detection, deadlines and holidays, infraction table, argument selection, status machine, extraction schema). No I/O, no React. Every module has a co-located Vitest file; extend the tests before changing a rule, since a wrong deadline loses a case.
 - `packages/ui` (`@workspace/ui`) is the design system: shadcn components, `cn`, shared hooks and the single Tailwind stylesheet. There is no build step. `package.json` `exports` maps `./components/*`, `./hooks/*`, `./lib/*`, `./globals.css` and `./postcss.config` straight to files under `src/`, and `apps/web/next.config.ts` lists it in `transpilePackages`. Import as `@workspace/ui/components/button`.
 - `packages/eslint-config` and `packages/typescript-config` hold the shared configs. Each workspace's `eslint.config.js` and `tsconfig.json` extend them; the root `.eslintrc.js` only carries ignore patterns.
 
