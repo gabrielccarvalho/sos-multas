@@ -1,6 +1,6 @@
 # POC: assisted filing of a traffic-ticket dispute
 
-Date: 2026-09-11. Status: proposed, awaiting approval. Research behind it: `docs/research/2026-09-11-filing-feasibility.md`.
+Date: 2026-09-11. Status: approved 2026-09-11 with one change (Postgres in Docker for local development). Research behind it: `docs/research/2026-09-11-filing-feasibility.md`.
 
 ## Goal
 
@@ -64,7 +64,7 @@ Single Next.js app in `apps/web`, server actions for mutations, route handlers o
 - **Domain module** `apps/web/lib/domain/`: pure TypeScript, no I/O, fully unit-tested. Órgão routing, stage detection, deadline arithmetic (Res. 918 art. 29 rule, national and Natal holidays), infraction table, argument selection, status machine, extraction schema.
 - **Extraction** `apps/web/lib/extraction/`: sends the file to a Claude vision model with the schema and returns a typed result with per-field confidence. Model chosen at implementation time from the current Claude lineup; the prompt and schema are versioned so results are reproducible.
 - **Documents** `apps/web/lib/documents/`: PDF templates with `@react-pdf/renderer`. Three templates for the POC: STTU requerimento (mirrors the official form fields), DETRAN-RN requerimento (mirrors the standard form), procuração, plus the defesa body assembled from argument blocks.
-- **Data**: Postgres on Neon with Drizzle. Tables `cases`, `case_files`, `case_events`, `extractions`. Files in Vercel Blob, private, referenced by URL in `case_files`. CNH and CRLV objects are deleted when a case reaches a terminal status plus 30 days.
+- **Data**: Postgres with Drizzle. Locally and in tests it runs in Docker Compose (`pnpm db:up`); production uses a managed Postgres (Neon) with the same schema. Tables `cases`, `case_files`, `case_events`, `extractions`. Files in Vercel Blob, private, referenced by URL in `case_files`. CNH and CRLV objects are deleted when a case reaches a terminal status plus 30 days.
 - **Access**: no user accounts in the POC. Each case has an unguessable token in its URL and a lookup by CPF and placa. The operator console is protected by a single password in an environment variable. Real auth is a post-POC decision.
 - **Notifications**: none. In-app only, by decision.
 
@@ -123,10 +123,10 @@ The POC does not submit anything to a portal. The operator runbook (written in p
 
 Payments, user accounts, e-mail or WhatsApp notifications, automated portal submission, polling STTU process status, indicação de condutor as a separate flow (the packet includes the form, but the second signer flow is not built), JARI and CETRAN stages beyond storing their deadlines.
 
-## Decisions to approve
+## Decisions (approved 2026-09-11)
 
 1. Approach A, assisted filing through the company as procurador.
-2. Neon Postgres with Drizzle, Vercel Blob for files, Vercel hosting.
+2. Postgres with Drizzle, in Docker Compose locally and Neon in production; Vercel Blob for files; Vercel hosting.
 3. Claude vision for extraction, model picked at implementation.
 4. `@react-pdf/renderer` for the packet.
 5. Vitest as the test runner for the monorepo.
