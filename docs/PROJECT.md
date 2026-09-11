@@ -105,19 +105,24 @@ Recommendation: A first, B as an upsell, and use both to gather what C needs.
 
 - 2026-09-11. Stack: Next.js 16 + shadcn (base-nova style, Base UI primitives, Hugeicons) + Tailwind v4 in a pnpm/Turborepo monorepo. All shadcn registry components installed into `packages/ui`.
 - 2026-09-11. Filing automation postponed. The first product milestone is the shell plus ticket capture UI.
+- 2026-09-11. Feasibility research done (`docs/research/2026-09-11-filing-feasibility.md`). Automating the portals as the user is ruled out by gov.br terms and STTU's personal credentials. The viable route is the company filing as the user's procurador. POC scope agreed: both órgãos routed by issuer, dry run (no real ticket yet), in-app updates only.
+- 2026-09-11. Proposed POC design in `docs/specs/2026-09-11-poc-assisted-filing.md` (assisted filing, operator submits, Neon + Drizzle, Vercel Blob, Claude vision, react-pdf, Vitest, token links instead of accounts). Awaiting approval.
 
 ## Open questions
 
-- Confirm the current deadlines, forms and channels for STTU and DETRAN-RN. Both change; the letter is the source of truth.
-- Is there any structured lookup of infractions by plate and RENAVAM at STTU or DETRAN-RN? The DETRAN-RN portal has a consulta de infrações page; check whether it is scriptable.
-- Does drafting administrative defenses for a fee run into OAB rules on legal practice? Administrative appeals do not require a lawyer, but check the positions on "assessoria em recursos de multa".
-- LGPD: CNH and CRLV copies are personal data. Define retention and deletion before storing anything.
+- Does DETRAN-RN accept a defesa, JARI recurso or indicação de condutor filed from a CNPJ account for a third-party vehicle with a procuração? Does protocolo@detran.rn.gov.br still accept filings? Ask via WhatsApp (84) 98862-2731 or portal@detran.rn.gov.br.
+- What does the real Directa "Abrir Processo" form look like (fields, PDF size limits) and how long does a Tipo 3 account take to approve? Needs an account.
+- Does the public DETRAN-RN débitos lookup (placa + RENAVAM) return infractions for a real vehicle without login? Test with a real pair.
+- Signature: will STTU and DETRAN-RN clerks accept scanned wet signatures and a procuração without firma reconhecida (Lei 13.726 says yes)? Only a real filing answers this.
+- OAB framing: get a lawyer's read on the procuração template, the terms of service and the marketing copy before launch.
+- LGPD: retention rule for CNH and CRLV (proposed: delete 30 days after a terminal status). Confirm with the legal consult.
+- Company entity: a CNPJ is needed for the portal accounts and the procuração.
 - Name and domain for the product.
 
 ## Roadmap (draft)
 
 - **Milestone 0, foundation.** Monorepo, design system, docs. Done 2026-09-11.
-- **Milestone 1, landing and capture.** pt-BR landing page, ticket intake wizard with manual entry, stage and deadline calculator, no accounts.
-- **Milestone 2, defense generator.** Templates per órgão and enquadramento, PDF output, payment.
-- **Milestone 3, accounts and tracking.** Auth, ticket list, deadline reminders by email or WhatsApp.
-- **Milestone 4, filing automation.** STTU and DETRAN-RN integrations.
+- **Milestone 1, POC of assisted filing.** Upload, extraction with user confirmation, routing and deadlines, packet PDFs, signed uploads, case timeline, operator console, dry-run rehearsal. Spec in `docs/specs/2026-09-11-poc-assisted-filing.md`.
+- **Milestone 2, first real filings.** Company accounts on Directa and DETRAN-RN, operator runbooks, first cases filed as test cases, deadline reminders.
+- **Milestone 3, product.** Payments, accounts, e-mail or WhatsApp notifications, landing page, legal review of copy and terms.
+- **Milestone 4, automation.** Scripted submission to Directa with the company account, STTU status polling, DETRAN-RN once its CNPJ channel is confirmed.
