@@ -7,8 +7,6 @@ import {
   type ConfirmState,
 } from "@/lib/cases/confirm-case-data"
 
-export type { ConfirmState }
-
 export async function confirmCaseData(
   token: string,
   _previous: ConfirmState,

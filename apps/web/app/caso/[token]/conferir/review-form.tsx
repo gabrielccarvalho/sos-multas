@@ -26,8 +26,9 @@ import {
 import { Spinner } from "@workspace/ui/components/spinner"
 
 import { FormTextField } from "@/components/form-text-field"
+import type { ConfirmState } from "@/lib/cases/confirm-case-data"
 import type { Stage } from "@/lib/domain/stage"
-import { confirmCaseData, type ConfirmState } from "./actions"
+import { confirmCaseData } from "./actions"
 
 export const REVIEW_FIELDS = [
   "orgaoCode",
