@@ -3,6 +3,7 @@ import { z } from "zod"
 import { computeDeadline, isoDate } from "../domain/deadlines"
 import { resolveOrgao, type Orgao } from "../domain/orgao"
 import { caseDataFormSchema } from "./case-form-schema"
+import { submittedValues } from "./form-values"
 import { getCaseByToken, transitionCase, updateCaseData } from "./repository"
 
 export interface ConfirmState {
@@ -14,16 +15,6 @@ export interface ConfirmState {
 export type ConfirmResult = { ok: true } | { ok: false; state: ConfirmState }
 
 const DEFENSE_DAYS = 30
-
-function submittedValues(formData: FormData): Record<string, string> {
-  const values: Record<string, string> = {}
-  for (const [key, value] of formData.entries()) {
-    if (typeof value === "string" && !key.startsWith("$ACTION")) {
-      values[key] = value
-    }
-  }
-  return values
-}
 
 function fallbackDeadline(
   explicit: string | null,
