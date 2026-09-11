@@ -13,7 +13,9 @@ export async function GET(
   return new Response(new Uint8Array(body), {
     headers: {
       "Content-Type": file.mime,
-      "Content-Disposition": "inline",
+      "Content-Disposition": `inline; filename*=UTF-8''${encodeURIComponent(
+        file.originalName ?? file.storageKey.split("/").at(-1) ?? "arquivo"
+      )}`,
       "Cache-Control": "private, no-store",
     },
   })

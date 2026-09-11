@@ -13,7 +13,7 @@ export default function Page() {
         DETRAN-RN, com você acompanhando cada passo.
       </p>
       <div>
-        <Button size="lg" render={<Link href="/nova" />}>
+        <Button size="lg" nativeButton={false} render={<Link href="/nova" />}>
           Enviar minha multa
         </Button>
       </div>
