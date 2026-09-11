@@ -106,7 +106,9 @@ Recommendation: A first, B as an upsell, and use both to gather what C needs.
 - 2026-09-11. Stack: Next.js 16 + shadcn (base-nova style, Base UI primitives, Hugeicons) + Tailwind v4 in a pnpm/Turborepo monorepo. All shadcn registry components installed into `packages/ui`.
 - 2026-09-11. Filing automation postponed. The first product milestone is the shell plus ticket capture UI.
 - 2026-09-11. Feasibility research done (`docs/research/2026-09-11-filing-feasibility.md`). Automating the portals as the user is ruled out by gov.br terms and STTU's personal credentials. The viable route is the company filing as the user's procurador. POC scope agreed: both órgãos routed by issuer, dry run (no real ticket yet), in-app updates only.
-- 2026-09-11. Proposed POC design in `docs/specs/2026-09-11-poc-assisted-filing.md` (assisted filing, operator submits, Neon + Drizzle, Vercel Blob, Claude vision, react-pdf, Vitest, token links instead of accounts). Awaiting approval.
+- 2026-09-11. Proposed POC design in `docs/specs/2026-09-11-poc-assisted-filing.md` (assisted filing, operator submits, Neon + Drizzle, Vercel Blob, Claude vision, react-pdf, Vitest, token links instead of accounts). Approved 2026-09-11 with Postgres in Docker locally.
+- 2026-09-11. Phase 1 built: pure domain module with tests, Vitest, Docker Postgres.
+- 2026-09-11. Phase 2 built: Drizzle on Postgres, storage interface with local disk, extraction with Claude structured outputs (`claude-opus-5`, override with `EXTRACTION_MODEL`), upload route and review screen. Vercel Blob adapter deferred to deployment. The live extraction has not run yet because no Anthropic key was available in this environment; add `ANTHROPIC_API_KEY` to `apps/web/.env.local` and run the extraction test.
 
 ## Open questions
 

@@ -26,6 +26,8 @@ Scope to one workspace with `pnpm --filter web <script>` or `pnpm --filter @work
 
 Run one test file with `pnpm --filter web exec vitest run lib/domain/deadlines.test.ts`.
 
+Integration tests (repository, confirmation, live extraction) read `apps/web/.env.local`; without `DATABASE_URL` or `ANTHROPIC_API_KEY` they are skipped, not failed. Run `pnpm db:up && pnpm db:migrate` once before them. Every env var the app reads must be listed in `globalEnv` in `turbo.json`, or lint flags it.
+
 ### Adding shadcn components
 
 ```bash
@@ -42,6 +44,10 @@ pnpm workspace (`apps/*`, `packages/*`) orchestrated by Turborepo. Internal pack
 
 - `apps/web` is the Next.js 16 app (App Router, React 19, React Server Components). It owns routes, `app/layout.tsx`, fonts, the theme provider and anything app-specific under `components/`, `hooks/`, `lib/`. The `@/` alias maps to the app root.
 - `apps/web/lib/domain` is pure domain logic (órgão routing, stage detection, deadlines and holidays, infraction table, argument selection, status machine, extraction schema). No I/O, no React. Every module has a co-located Vitest file; extend the tests before changing a rule, since a wrong deadline loses a case.
+- `apps/web/lib/db` is Drizzle: `schema.ts` (tables and enums), `client.ts` (lazy `getDb()`, never call it at module scope), migrations under `apps/web/drizzle` generated with `pnpm db:generate` and applied with `pnpm db:migrate`. Change the schema, generate, commit the SQL.
+- `apps/web/lib/cases` owns case data: `repository.ts` is the only place that reads or writes cases, files, events and extractions, and status changes go through `transitionCase`, which enforces the status machine and writes the event in the same transaction. `confirm-case-data.ts` holds the review-step logic so the server action in `app/caso/[token]/conferir/actions.ts` stays a thin wrapper that only redirects.
+- `apps/web/lib/storage` hides where files live (`Storage` interface). Local disk under `STORAGE_DIR` for now; a Vercel Blob adapter comes with deployment. Files are only served through `/caso/[token]/arquivo/[fileId]`.
+- `apps/web/lib/extraction` is the Claude call. The prompt is versioned (`PROMPT_VERSION`), the model's output is validated with the loose `modelOutputSchema`, normalised, then re-validated with the strict domain schema. Inject `ExtractionDeps` in tests; the live test runs only with `ANTHROPIC_API_KEY`. Synthetic letters live in `__fixtures__` (HTML source plus a PNG rendered with `pnpm dlx playwright screenshot`).
 - `packages/ui` (`@workspace/ui`) is the design system: shadcn components, `cn`, shared hooks and the single Tailwind stylesheet. There is no build step. `package.json` `exports` maps `./components/*`, `./hooks/*`, `./lib/*`, `./globals.css` and `./postcss.config` straight to files under `src/`, and `apps/web/next.config.ts` lists it in `transpilePackages`. Import as `@workspace/ui/components/button`.
 - `packages/eslint-config` and `packages/typescript-config` hold the shared configs. Each workspace's `eslint.config.js` and `tsconfig.json` extend them; the root `.eslintrc.js` only carries ignore patterns.
 
