@@ -1,5 +1,6 @@
 import {
   Document,
+  Font,
   Page,
   StyleSheet,
   Text,
@@ -8,6 +9,8 @@ import {
 } from "@react-pdf/renderer"
 
 import type { PacketContent, PacketParty } from "../packet-content"
+
+Font.registerHyphenationCallback((word) => [word])
 
 const DECLARATION =
   "DECLARO QUE OS DADOS FORNECIDOS SÃO A EXPRESSÃO DA VERDADE E OS DOCUMENTOS APRESENTADOS SÃO LEGÍTIMOS."
@@ -28,10 +31,15 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     marginBottom: 10,
   },
-  headerTitle: { fontFamily: "Helvetica-Bold", fontSize: 16 },
+  headerTitle: {
+    fontWeight: "bold",
+    fontSize: 15,
+    lineHeight: 1.25,
+    marginBottom: 2,
+  },
   headerSubtitle: { fontSize: 9, color: "#333333" },
   sectionTitle: {
-    fontFamily: "Helvetica-Bold",
+    fontWeight: "bold",
     fontSize: 9.5,
     backgroundColor: "#e5e5e5",
     paddingVertical: 3,
@@ -60,16 +68,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  checkMark: { fontSize: 7, fontFamily: "Helvetica-Bold", lineHeight: 1 },
+  checkMark: { fontSize: 7, fontWeight: "bold", lineHeight: 1 },
   column: { flex: 1 },
   title: {
-    fontFamily: "Helvetica-Bold",
+    fontWeight: "bold",
     fontSize: 13,
     textAlign: "center",
     marginVertical: 12,
   },
-  heading: { fontFamily: "Helvetica-Bold", fontSize: 11, marginTop: 8 },
-  subheading: { fontFamily: "Helvetica-Bold", marginBottom: 2 },
+  heading: { fontWeight: "bold", fontSize: 11, marginTop: 8 },
+  subheading: { fontWeight: "bold", marginBottom: 2 },
   paragraph: { marginTop: 6, textAlign: "justify" },
   small: { fontSize: 8, color: "#333333" },
   declaration: { fontSize: 8, marginTop: 12 },
