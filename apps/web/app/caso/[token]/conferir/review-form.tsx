@@ -19,13 +19,13 @@ import {
   FieldLegend,
   FieldSet,
 } from "@workspace/ui/components/field"
-import { Input } from "@workspace/ui/components/input"
 import {
   NativeSelect,
   NativeSelectOption,
 } from "@workspace/ui/components/native-select"
 import { Spinner } from "@workspace/ui/components/spinner"
 
+import { FormTextField } from "@/components/form-text-field"
 import type { Stage } from "@/lib/domain/stage"
 import { confirmCaseData, type ConfirmState } from "./actions"
 
@@ -56,48 +56,6 @@ export interface ReviewDefaults {
 
 const initialState: ConfirmState = { errors: {}, message: null, values: null }
 
-function TextField({
-  name,
-  label,
-  type = "text",
-  placeholder,
-  description,
-  required,
-  defaultValue,
-  errors,
-  unsure,
-}: {
-  name: ReviewFieldName
-  label: string
-  type?: "text" | "date" | "datetime-local"
-  placeholder?: string
-  description?: string
-  required?: boolean
-  defaultValue: string
-  errors: string[] | undefined
-  unsure: boolean
-}) {
-  return (
-    <Field data-invalid={errors ? true : undefined}>
-      <FieldLabel htmlFor={name}>
-        {label}
-        {unsure ? <Badge variant="outline">Confira</Badge> : null}
-      </FieldLabel>
-      <Input
-        id={name}
-        name={name}
-        type={type}
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-        required={required}
-        aria-invalid={errors ? true : undefined}
-      />
-      {description ? <FieldDescription>{description}</FieldDescription> : null}
-      {errors ? <FieldError>{errors.join(" ")}</FieldError> : null}
-    </Field>
-  )
-}
-
 export function ReviewForm({
   token,
   defaults,
@@ -120,12 +78,16 @@ export function ReviewForm({
       required?: boolean
     } = {}
   ) => (
-    <TextField
+    <FormTextField
       name={name}
       label={label}
       defaultValue={state.values?.[name] ?? defaults.values[name] ?? ""}
       errors={state.errors[name]}
-      unsure={defaults.lowConfidence.includes(name)}
+      badge={
+        defaults.lowConfidence.includes(name) ? (
+          <Badge variant="outline">Confira</Badge>
+        ) : null
+      }
       {...options}
     />
   )
