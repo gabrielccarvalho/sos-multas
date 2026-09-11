@@ -28,6 +28,7 @@ dist
 .DS_Store
 *.pem
 *.swp
+.uploads/
 
 # debug
 npm-debug.log*

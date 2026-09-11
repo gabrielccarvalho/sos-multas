@@ -10,7 +10,10 @@
     "typecheck": "turbo typecheck",
     "test": "turbo test",
     "db:up": "docker compose up -d",
-    "db:down": "docker compose down"
+    "db:down": "docker compose down",
+    "db:generate": "pnpm --filter web db:generate",
+    "db:migrate": "pnpm --filter web db:migrate",
+    "db:studio": "pnpm --filter web db:studio"
   },
   "devDependencies": {
     "@workspace/eslint-config": "workspace:*",
