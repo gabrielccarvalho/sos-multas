@@ -3,6 +3,7 @@ import { afterAll, describe, expect, it } from "vitest"
 import { closeDb } from "../db/client"
 import {
   WARNING_EVENT,
+  deadlineIsLive,
   deadlineWarning,
   runDeadlineWarnings,
 } from "./deadline-warnings"
@@ -52,6 +53,32 @@ describe("deadlineWarning", () => {
       expect(
         deadlineWarning({ ...open("2026-09-12"), status }, today)
       ).toBeNull()
+    }
+  })
+})
+
+describe("deadlineIsLive", () => {
+  it("is false once the case is filed or closed", () => {
+    for (const status of [
+      "filed",
+      "under_review",
+      "decided_granted",
+      "decided_denied",
+      "cancelled",
+    ] as const) {
+      expect(deadlineIsLive(status)).toBe(false)
+    }
+  })
+
+  it("is true while the case is still open", () => {
+    for (const status of [
+      "received",
+      "needs_review",
+      "needs_documents",
+      "needs_signature",
+      "ready_to_file",
+    ] as const) {
+      expect(deadlineIsLive(status)).toBe(true)
     }
   })
 })

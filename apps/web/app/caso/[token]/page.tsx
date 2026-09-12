@@ -16,6 +16,7 @@ import {
 } from "@workspace/ui/components/card"
 
 import { ButtonLink } from "@/components/button-link"
+import { deadlineIsLive } from "@/lib/cases/deadline-warnings"
 import { nextDeadline } from "@/lib/cases/next-deadline"
 import { caseProgress } from "@/lib/cases/progress"
 import { getCaseDetails, type CaseDetails } from "@/lib/cases/repository"
@@ -30,7 +31,8 @@ const dateFormat = new Intl.DateTimeFormat("pt-BR", {
 })
 
 function deadlineLine(details: CaseDetails): string | null {
-  const { stage } = details.case
+  const { stage, status } = details.case
+  if (!deadlineIsLive(status)) return null
   const deadline = nextDeadline(details.case)
   if (!deadline) return null
   const today = new Date(`${localIsoDate(new Date())}T00:00:00Z`)

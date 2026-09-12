@@ -17,6 +17,10 @@ const QUIET: readonly CaseStatus[] = [
   "cancelled",
 ]
 
+export function deadlineIsLive(status: CaseStatus): boolean {
+  return !QUIET.includes(status)
+}
+
 export interface DeadlineWarning {
   deadline: string
   remainingDays: number
@@ -30,7 +34,7 @@ export function deadlineWarning(
   >,
   today: Date
 ): DeadlineWarning | null {
-  if (QUIET.includes(caseData.status)) return null
+  if (!deadlineIsLive(caseData.status)) return null
   const deadline = nextDeadline(caseData)
   if (!deadline) return null
   const remainingDays = daysUntil(new Date(`${deadline}T00:00:00Z`), today)
