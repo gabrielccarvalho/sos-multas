@@ -122,6 +122,16 @@ describe.skipIf(!process.env.DATABASE_URL)("case repository", () => {
     const found = await findCasesByOwner("52998224725", "QWE4R56")
     expect(found.map((row) => row.id)).toContain(created.id)
     expect(await findCasesByOwner("52998224725", "ZZZ9Z99")).toEqual([])
-    expect((await findEvents(created.id, "case.received")).length).toBe(1)
+    await addEvent(created.id, {
+      type: "operator.note",
+      messagePt: "Nota do operador sobre o caso.",
+      actor: "operator",
+    })
+    const received = await findEvents(created.id, "case.received")
+    expect(received).toHaveLength(1)
+    expect(received[0]?.type).toBe("case.received")
+    const notes = await findEvents(created.id, "operator.note")
+    expect(notes).toHaveLength(1)
+    expect(notes[0]?.messagePt).toBe("Nota do operador sobre o caso.")
   })
 })
