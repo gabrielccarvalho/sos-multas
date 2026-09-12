@@ -124,6 +124,7 @@ Recommendation: A first, B as an upsell, and use both to gather what C needs.
 - Company entity: a CNPJ is needed for the portal accounts and the procuração.
 - Name and domain for the product.
 - The CPF-and-plate lookup has no rate limit. Add one (or switch to a magic link) before the product milestone.
+- The operator login accepts unlimited password attempts against one shared password with no rate limiting or lockout. Acceptable for an undeployed POC with synthetic data, but a hard gate before deployment.
 
 ## Roadmap (draft)
 
