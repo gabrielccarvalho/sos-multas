@@ -65,6 +65,7 @@ export default async function Page({
           size="sm"
           variant="outline"
           target="_blank"
+          rel="noreferrer"
         >
           Ver como o cliente
         </ButtonLink>

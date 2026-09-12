@@ -44,11 +44,7 @@ export async function fileCase(
   )
 }
 
-export async function startReview(
-  id: string,
-  _previous: FormState,
-  _formData: FormData
-): Promise<FormState> {
+export async function startReview(id: string): Promise<FormState> {
   await requireOperator()
   return finish(id, await markUnderReview(id))
 }

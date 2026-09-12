@@ -21,7 +21,7 @@ import {
 import { Textarea } from "@workspace/ui/components/textarea"
 
 import { emptyFormState, type FormState } from "@/lib/operator/form-state"
-import type { CaseStatus } from "@/lib/domain/status"
+import { isTerminal, type CaseStatus } from "@/lib/domain/status"
 import { cancel, correct, decide, fileCase, note, startReview } from "./actions"
 
 type Action = (
@@ -73,9 +73,7 @@ export function OperatorActions({
   id: string
   status: CaseStatus
 }) {
-  const open = !["decided_granted", "decided_denied", "cancelled"].includes(
-    status
-  )
+  const open = !isTerminal(status)
   return (
     <div className="flex flex-col gap-4">
       {status === "ready_to_file" ? (
