@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 import { ButtonLink } from "@/components/button-link"
 
 export default function Page() {
@@ -15,6 +17,13 @@ export default function Page() {
           Enviar minha multa
         </ButtonLink>
       </div>
+      <p className="text-sm text-muted-foreground">
+        Já enviou?{" "}
+        <Link href="/acompanhar" className="underline underline-offset-4">
+          Acompanhe o seu caso
+        </Link>
+        .
+      </p>
     </main>
   )
 }

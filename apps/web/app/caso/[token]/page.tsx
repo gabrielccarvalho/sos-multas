@@ -16,6 +16,7 @@ import {
 } from "@workspace/ui/components/card"
 
 import { ButtonLink } from "@/components/button-link"
+import { nextDeadline } from "@/lib/cases/next-deadline"
 import { caseProgress } from "@/lib/cases/progress"
 import { getCaseDetails, type CaseDetails } from "@/lib/cases/repository"
 import { formatIsoDate, localIsoDate } from "@/lib/documents/format"
@@ -29,8 +30,8 @@ const dateFormat = new Intl.DateTimeFormat("pt-BR", {
 })
 
 function deadlineLine(details: CaseDetails): string | null {
-  const { stage, deadlineDefense, deadlineAppeal } = details.case
-  const deadline = stage === "NIP" ? deadlineAppeal : deadlineDefense
+  const { stage } = details.case
+  const deadline = nextDeadline(details.case)
   if (!deadline) return null
   const today = new Date(`${localIsoDate(new Date())}T00:00:00Z`)
   const remaining = daysUntil(new Date(`${deadline}T00:00:00Z`), today)
@@ -136,6 +137,66 @@ function NextStep({ details, token }: { details: CaseDetails; token: string }) {
             <CardDescription>
               Recebemos os documentos assinados. Vamos protocolar a sua defesa e
               avisar aqui cada novidade.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )
+    case "filed":
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle>Defesa protocolada</CardTitle>
+            <CardDescription>
+              {details.case.protocolNumber
+                ? `Protocolo ${details.case.protocolNumber}. Agora é aguardar o órgão analisar.`
+                : "Agora é aguardar o órgão analisar."}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )
+    case "under_review":
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle>Em análise</CardTitle>
+            <CardDescription>
+              O órgão está analisando a sua defesa. A decisão pode demorar
+              semanas, e avisamos aqui assim que sair.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )
+    case "decided_granted":
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle>Defesa aceita</CardTitle>
+            <CardDescription>
+              O auto de infração foi arquivado. Guarde o histórico abaixo como
+              comprovante.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )
+    case "decided_denied":
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle>Defesa negada</CardTitle>
+            <CardDescription>
+              Ainda pode haver recurso em outra instância. Veja o histórico
+              abaixo e fale com a gente.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )
+    case "cancelled":
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle>Caso cancelado</CardTitle>
+            <CardDescription>
+              Este caso foi encerrado sem protocolo. O motivo está no histórico.
             </CardDescription>
           </CardHeader>
         </Card>
