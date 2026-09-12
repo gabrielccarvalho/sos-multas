@@ -5,6 +5,7 @@ import { redirect } from "next/navigation"
 import type { LookupMatch } from "@/lib/cases/lookup-match"
 import { findCasesByOwner } from "@/lib/cases/repository"
 import { isValidCpf, normalizeCpf } from "@/lib/domain/cpf"
+import { isValidPlaca, normalizePlaca } from "@/lib/domain/plate"
 import { STATUS_LABELS } from "@/lib/domain/status"
 
 export async function findCase(
@@ -12,13 +13,11 @@ export async function findCase(
   formData: FormData
 ): Promise<{ error: string | null; matches: LookupMatch[] }> {
   const cpf = normalizeCpf(String(formData.get("cpf") ?? ""))
-  const placa = String(formData.get("placa") ?? "")
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "")
+  const placa = normalizePlaca(String(formData.get("placa") ?? ""))
   if (!isValidCpf(cpf)) {
     return { error: "CPF inválido.", matches: [] }
   }
-  if (!/^[A-Z]{3}\d[A-Z0-9]\d{2}$/.test(placa)) {
+  if (!isValidPlaca(placa)) {
     return { error: "Placa inválida.", matches: [] }
   }
 

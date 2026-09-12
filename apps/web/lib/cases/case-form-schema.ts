@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+import { isValidPlaca, normalizePlaca } from "../domain/plate"
+
 const blankToNull = (value: string) =>
   value.trim() === "" ? null : value.trim()
 
@@ -27,8 +29,8 @@ const baseSchema = z.object({
   placa: z
     .string()
     .trim()
-    .transform((value) => value.toUpperCase().replace(/[^A-Z0-9]/g, ""))
-    .pipe(z.string().regex(/^[A-Z]{3}\d[A-Z0-9]\d{2}$/, "Placa inválida.")),
+    .transform(normalizePlaca)
+    .refine(isValidPlaca, "Placa inválida."),
   renavam: optionalText.pipe(
     z
       .string()
