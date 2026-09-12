@@ -33,16 +33,17 @@ describe("status machine", () => {
     expect(canTransition("ready_to_file", "needs_signature")).toBe(true)
   })
 
-  it("allows cancelling until the órgão is reviewing", () => {
+  it("allows cancelling any case that has not reached a decision", () => {
     expect(canTransition("received", "cancelled")).toBe(true)
     expect(canTransition("filed", "cancelled")).toBe(true)
-    expect(canTransition("under_review", "cancelled")).toBe(false)
+    expect(canTransition("under_review", "cancelled")).toBe(true)
   })
 
   it("rejects skipping steps and leaving terminal states", () => {
     expect(canTransition("received", "filed")).toBe(false)
     expect(canTransition("decided_denied", "under_review")).toBe(false)
     expect(canTransition("cancelled", "received")).toBe(false)
+    expect(canTransition("decided_granted", "cancelled")).toBe(false)
   })
 
   it("throws a typed error on an invalid transition", () => {

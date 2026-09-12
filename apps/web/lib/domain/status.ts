@@ -33,7 +33,7 @@ const TRANSITIONS: Record<CaseStatus, readonly CaseStatus[]> = {
   needs_signature: ["ready_to_file", "needs_documents", "cancelled"],
   ready_to_file: ["filed", "needs_signature", "cancelled"],
   filed: ["under_review", "cancelled"],
-  under_review: ["decided_granted", "decided_denied"],
+  under_review: ["decided_granted", "decided_denied", "cancelled"],
   decided_granted: [],
   decided_denied: [],
   cancelled: [],
