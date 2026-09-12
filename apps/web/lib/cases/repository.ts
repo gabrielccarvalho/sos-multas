@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto"
 
-import { desc, eq } from "drizzle-orm"
+import { and, desc, eq } from "drizzle-orm"
 
 import { getDb, type Database } from "../db/client"
 import {
@@ -71,6 +71,8 @@ export type CaseDataUpdate = Partial<
     | "ownerCnhNumber"
     | "placaUf"
     | "narrative"
+    | "protocolNumber"
+    | "filedAt"
   >
 >
 
@@ -114,12 +116,9 @@ export async function getCaseByToken(
   return row ?? null
 }
 
-export async function getCaseDetails(
-  token: string,
-  db: Database = getDb()
-): Promise<CaseDetails | null> {
-  const found = await getCaseByToken(token, db)
-  if (!found) return null
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+async function detailsFor(found: CaseRow, db: Database): Promise<CaseDetails> {
   const [files, events, latest] = await Promise.all([
     db
       .select()
@@ -139,6 +138,54 @@ export async function getCaseDetails(
       .limit(1),
   ])
   return { case: found, files, events, extraction: latest[0] ?? null }
+}
+
+export async function getCaseDetails(
+  token: string,
+  db: Database = getDb()
+): Promise<CaseDetails | null> {
+  const found = await getCaseByToken(token, db)
+  return found ? detailsFor(found, db) : null
+}
+
+export async function getCaseDetailsById(
+  id: string,
+  db: Database = getDb()
+): Promise<CaseDetails | null> {
+  if (!UUID.test(id)) return null
+  const [found] = await db.select().from(cases).where(eq(cases.id, id)).limit(1)
+  return found ? detailsFor(found, db) : null
+}
+
+export async function listCases(
+  filter: { status?: CaseStatus } = {},
+  db: Database = getDb()
+): Promise<CaseRow[]> {
+  const query = db.select().from(cases).orderBy(desc(cases.createdAt))
+  return filter.status ? query.where(eq(cases.status, filter.status)) : query
+}
+
+export async function findCasesByOwner(
+  cpf: string,
+  placa: string,
+  db: Database = getDb()
+): Promise<CaseRow[]> {
+  return db
+    .select()
+    .from(cases)
+    .where(and(eq(cases.ownerCpf, cpf), eq(cases.placa, placa)))
+    .orderBy(desc(cases.createdAt))
+}
+
+export async function findEvents(
+  caseId: string,
+  type: string,
+  db: Database = getDb()
+): Promise<CaseEventRow[]> {
+  return db
+    .select()
+    .from(caseEvents)
+    .where(and(eq(caseEvents.caseId, caseId), eq(caseEvents.type, type)))
 }
 
 export async function addFile(

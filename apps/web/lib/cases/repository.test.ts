@@ -6,8 +6,12 @@ import {
   addEvent,
   addFile,
   createCase,
+  findCasesByOwner,
+  findEvents,
   getCaseByToken,
   getCaseDetails,
+  getCaseDetailsById,
+  listCases,
   saveExtraction,
   transitionCase,
   updateCaseData,
@@ -96,5 +100,28 @@ describe.skipIf(!process.env.DATABASE_URL)("case repository", () => {
     const details = await getCaseDetails(created.token)
     expect(details?.case.status).toBe("received")
     expect(details?.events).toHaveLength(1)
+  })
+
+  it("lists, loads by id and finds by owner", async () => {
+    const created = await createCase()
+    await updateCaseData(created.id, {
+      ownerCpf: "52998224725",
+      placa: "QWE4R56",
+      protocolNumber: "20260000123",
+      filedAt: new Date("2026-09-12T12:00:00Z"),
+    })
+    expect((await listCases()).some((row) => row.id === created.id)).toBe(true)
+    expect(
+      (await listCases({ status: "filed" })).some(
+        (row) => row.id === created.id
+      )
+    ).toBe(false)
+    const byId = await getCaseDetailsById(created.id)
+    expect(byId?.case.protocolNumber).toBe("20260000123")
+    expect(await getCaseDetailsById("not-a-uuid")).toBeNull()
+    const found = await findCasesByOwner("52998224725", "QWE4R56")
+    expect(found.map((row) => row.id)).toContain(created.id)
+    expect(await findCasesByOwner("52998224725", "ZZZ9Z99")).toEqual([])
+    expect((await findEvents(created.id, "case.received")).length).toBe(1)
   })
 })
