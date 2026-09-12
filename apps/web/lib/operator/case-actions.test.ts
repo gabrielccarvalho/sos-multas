@@ -67,6 +67,20 @@ describe.skipIf(!process.env.DATABASE_URL)("operator case actions", () => {
     expect(details?.events.at(-1)?.messagePt).toContain("2026/000123")
   })
 
+  it("files a ready case without a receipt", async () => {
+    const ready = await caseAt("ready_to_file")
+    const result = await markFiled(
+      ready.id,
+      { protocolNumber: "2026/000456", receipt: null },
+      deps
+    )
+    expect(result).toEqual({ ok: true })
+    const details = await getCaseDetailsById(ready.id)
+    expect(details?.case.status).toBe("filed")
+    expect(details?.case.protocolNumber).toBe("2026/000456")
+    expect(details?.files).toEqual([])
+  })
+
   it("refuses to file without a protocol number, with a bad receipt or from another status", async () => {
     const ready = await caseAt("ready_to_file")
     expect(

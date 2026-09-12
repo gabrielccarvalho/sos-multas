@@ -83,14 +83,6 @@ async function attach(
   return { ok: true }
 }
 
-function checkFile(file: File | null, label: string): OperatorResult {
-  if (!isPresentFile(file)) return { ok: true }
-  const check = checkUpload(file, label)
-  return check.ok
-    ? { ok: true }
-    : { ok: false, error: `${label}: ${check.error}` }
-}
-
 export async function requestCorrection(
   caseId: string,
   message: string
@@ -130,10 +122,14 @@ export async function markFiled(
   const details = await getCaseDetailsById(caseId)
   if (!details) return NOT_FOUND
   if (details.case.status !== "ready_to_file") return WRONG_STATUS
-  const fileCheck = checkFile(input.receipt, "Comprovante")
-  if (!fileCheck.ok) return fileCheck
-
-  await attach(details, "receipt", "Comprovante", input.receipt, deps)
+  const attached = await attach(
+    details,
+    "receipt",
+    "Comprovante",
+    input.receipt,
+    deps
+  )
+  if (!attached.ok) return attached
   await updateCaseData(caseId, { protocolNumber, filedAt: deps.now() })
   return move(caseId, "filed", {
     type: "case.filed",
@@ -166,10 +162,14 @@ export async function recordDecision(
   const details = await getCaseDetailsById(caseId)
   if (!details) return NOT_FOUND
   if (details.case.status !== "under_review") return WRONG_STATUS
-  const fileCheck = checkFile(input.document, "Decisão")
-  if (!fileCheck.ok) return fileCheck
-
-  await attach(details, "decision", "Decisão", input.document, deps)
+  const attached = await attach(
+    details,
+    "decision",
+    "Decisão",
+    input.document,
+    deps
+  )
+  if (!attached.ok) return attached
   const outcome = input.granted
     ? "A sua defesa foi aceita. O auto de infração foi arquivado."
     : "A sua defesa foi negada."
