@@ -245,7 +245,8 @@ export async function transitionCase(
   caseId: string,
   to: CaseStatus,
   event: NewEvent,
-  db: Database = getDb()
+  db: Database = getDb(),
+  data?: CaseDataUpdate
 ): Promise<CaseRow> {
   return db.transaction(async (tx) => {
     const [current] = await tx
@@ -257,7 +258,7 @@ export async function transitionCase(
     assertTransition(current.status, to)
     const [row] = await tx
       .update(cases)
-      .set({ status: to, updatedAt: new Date() })
+      .set({ ...data, status: to, updatedAt: new Date() })
       .where(eq(cases.id, caseId))
       .returning()
     if (!row) throw new Error(`case ${caseId} not found`)

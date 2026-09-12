@@ -5,7 +5,7 @@ import {
   addFile,
   getCaseDetailsById,
   transitionCase,
-  updateCaseData,
+  type CaseDataUpdate,
   type CaseDetails,
   type NewEvent,
 } from "../cases/repository"
@@ -47,10 +47,11 @@ function readText(value: string | null | undefined, missing: string): Text {
 async function move(
   caseId: string,
   to: CaseStatus,
-  event: NewEvent
+  event: NewEvent,
+  data?: CaseDataUpdate
 ): Promise<OperatorResult> {
   try {
-    await transitionCase(caseId, to, event)
+    await transitionCase(caseId, to, event, undefined, data)
     return { ok: true }
   } catch (error) {
     if (error instanceof InvalidTransitionError) return WRONG_STATUS
@@ -130,13 +131,17 @@ export async function markFiled(
     deps
   )
   if (!attached.ok) return attached
-  await updateCaseData(caseId, { protocolNumber, filedAt: deps.now() })
-  return move(caseId, "filed", {
-    type: "case.filed",
-    messagePt: `Protocolamos a sua defesa junto ao órgão. Número do protocolo: ${protocolNumber}.`,
-    actor: "operator",
-    metadata: { protocolNumber },
-  })
+  return move(
+    caseId,
+    "filed",
+    {
+      type: "case.filed",
+      messagePt: `Protocolamos a sua defesa junto ao órgão. Número do protocolo: ${protocolNumber}.`,
+      actor: "operator",
+      metadata: { protocolNumber },
+    },
+    { protocolNumber, filedAt: deps.now() }
+  )
 }
 
 export async function markUnderReview(caseId: string): Promise<OperatorResult> {

@@ -102,6 +102,31 @@ describe.skipIf(!process.env.DATABASE_URL)("case repository", () => {
     expect(details?.events).toHaveLength(1)
   })
 
+  it("rejects an invalid transition without persisting its accompanying data", async () => {
+    const created = await createCase()
+    await expect(
+      transitionCase(created.id, "filed", event, undefined, {
+        protocolNumber: "2026/999999",
+      })
+    ).rejects.toBeInstanceOf(InvalidTransitionError)
+    const details = await getCaseDetails(created.token)
+    expect(details?.case.status).toBe("received")
+    expect(details?.case.protocolNumber).toBeNull()
+  })
+
+  it("applies accompanying data atomically with an allowed transition", async () => {
+    const created = await createCase()
+    const moved = await transitionCase(
+      created.id,
+      "needs_review",
+      event,
+      undefined,
+      { placa: "ABC1D23" }
+    )
+    expect(moved.status).toBe("needs_review")
+    expect(moved.placa).toBe("ABC1D23")
+  })
+
   it("lists, loads by id and finds by owner", async () => {
     const created = await createCase()
     await updateCaseData(created.id, {
