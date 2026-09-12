@@ -10,7 +10,9 @@
     "PROCURADOR_CNPJ",
     "PROCURADOR_ADDRESS",
     "PROCURADOR_EMAIL",
-    "PROCURADOR_PHONE"
+    "PROCURADOR_PHONE",
+    "OPERATOR_PASSWORD",
+    "CRON_SECRET"
   ],
   "tasks": {
     "build": {
