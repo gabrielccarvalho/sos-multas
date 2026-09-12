@@ -10,7 +10,10 @@ function same(a: string, b: string): boolean {
 }
 
 function signature(password: string, issuedAt: number): string {
-  return createHmac("sha256", password)
+  const key = createHmac("sha256", "sos-operator-session-v1")
+    .update(password)
+    .digest()
+  return createHmac("sha256", key)
     .update(`operator:${issuedAt}`)
     .digest("base64url")
 }

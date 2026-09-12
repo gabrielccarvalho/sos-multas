@@ -12,7 +12,8 @@
     "PROCURADOR_EMAIL",
     "PROCURADOR_PHONE",
     "OPERATOR_PASSWORD",
-    "CRON_SECRET"
+    "CRON_SECRET",
+    "NODE_ENV"
   ],
   "tasks": {
     "build": {
