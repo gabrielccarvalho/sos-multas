@@ -111,6 +111,7 @@ Recommendation: A first, B as an upsell, and use both to gather what C needs.
 - 2026-09-11. Phase 2 built: Drizzle on Postgres, storage interface with local disk, extraction with Claude structured outputs (`claude-opus-5`, override with `EXTRACTION_MODEL`), upload route and review screen. Vercel Blob adapter deferred to deployment. The live extraction has not run yet because no Anthropic key was available in this environment; add `ANTHROPIC_API_KEY` to `apps/web/.env.local` and run the extraction test.
 - 2026-09-11. Phase 3 built: story and requerente form with consent, CNH and CRLV upload, packet PDF (requerimento mirroring STTU's form, defesa, procuração, indicação when the owner was not driving), signed-page upload. The owner signs everything and the company files under a procuração limited to the process. Company identity comes from `PROCURADOR_*` env vars, still unset. A headless-browser rehearsal found and fixed two bugs the tests could not see: a crashing review action and buttons announced to screen readers as buttons instead of links.
 - Open: get DETRAN-RN's current requerimento form (the published PDF link now returns the portal shell) before the first DETRAN-RN filing.
+- 2026-09-11. Phase 4 built: operator console (list, detail, filing, review, decision, corrections, notes, cancel), automatic deadline warnings with a daily cron route, later case statuses on the user's page, and case lookup by CPF and plate.
 
 ## Open questions
 
@@ -122,6 +123,7 @@ Recommendation: A first, B as an upsell, and use both to gather what C needs.
 - LGPD: retention rule for CNH and CRLV (proposed: delete 30 days after a terminal status). Confirm with the legal consult.
 - Company entity: a CNPJ is needed for the portal accounts and the procuração.
 - Name and domain for the product.
+- The CPF-and-plate lookup has no rate limit. Add one (or switch to a magic link) before the product milestone.
 
 ## Roadmap (draft)
 

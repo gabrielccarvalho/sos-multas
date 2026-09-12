@@ -38,6 +38,8 @@ Operator side, `/admin`:
 - Case detail: letter, extracted data, packet download, signed uploads, event log.
 - Actions: request a correction from the user (adds an event with a message), mark "Protocolado" with protocol number and receipt upload, mark decisions, add free-text updates.
 
+The console is at `/admin`, protected by `OPERATOR_PASSWORD` with a 12-hour signed cookie. Users find a case again at `/acompanhar` with CPF and plate; that lookup is unauthenticated and unthrottled in the POC.
+
 ## Case lifecycle
 
 Statuses, with the label the user sees:
